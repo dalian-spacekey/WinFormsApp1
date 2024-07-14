@@ -1,0 +1,84 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+	<Package
+		Name="WinFormsApp1"
+		Manufacturer="Spacekey Inc."
+		Version="1.0.0"
+		UpgradeCode="98a19e81-56c3-4d93-944a-3d319cfd251e"
+		Language="1041"
+		Scope="perMachine"
+		ProductCode="3d1c3e6d-a72f-47cd-bc4d-a263a4924cdc">
+
+		<SummaryInformation Keywords="Installer" />
+
+		<!-- インストーラー生成時に、cabファイルをmsiファイルに埋め込む設定 -->
+		<Media Id="1" EmbedCab="yes" Cabinet="cab1.cab" />
+
+		<!-- 
+			アンインストール時にコンテキストメニューのせいでエクスプローラーを再起動する必要があるが
+			その辺を無視する設定
+		-->
+		<Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable"/>
+
+		<!-- インストール時に行われる内容 -->
+		<Feature Id="Main">
+			<ComponentRef Id="Products" />
+			<ComponentRef Id="DesktopShortcut" />
+			<ComponentRef Id="ProductProgramMenu" />
+			<ComponentRef Id="CreateLogsFolder" />
+			<ComponentRef Id="CreateTempFolder" />
+			<ComponentGroupRef Id="WinFormsApp1.Components"/>
+			<ComponentGroupRef Id="WinFormsApp1ContextMenu.Components"/>
+		</Feature>
+
+		<!-- アイコンファイルの定義 -->
+		<Icon Id="icon.ico" SourceFile="icon.ico" />
+
+		<!-- Program Files ディレクトリの設定 -->
+		<StandardDirectory Id="ProgramFiles64Folder">
+			<Directory Id="ProductFolder" Name="!(bind.Property.ProductName)">
+				<Component Id="Products" Guid="4ab84ec7-3b15-4af7-baa5-1e020fba8c6f"/>
+			</Directory>
+		</StandardDirectory>
+
+		<!-- 
+			ProgramData ディレクトリの設定
+			c:\ProgramData\WinFormsApp1 に LogsとTempディレクトリを作成
+		-->
+		<StandardDirectory Id="CommonAppDataFolder">
+			<Directory Id="ProductDataFolder" Name="!(bind.Property.ProductName)">
+				<Directory Id="Logs" Name="Logs"/>
+				<Directory Id="Temp" Name="Temp"/>
+			</Directory>
+			<Component Id="CreateLogsFolder" Directory="Logs" Guid="a59b763c-f210-4491-9828-61b615877499">
+				<CreateFolder />
+			</Component>
+			<Component Id="CreateTempFolder" Directory="Temp" Guid="e4ee6e9d-b7e2-4e12-9d65-3869dd365979">
+				<CreateFolder />
+			</Component>
+		</StandardDirectory>
+
+		<!-- Desktop shortcut -->
+		<StandardDirectory Id="DesktopFolder">
+			<Component Id="DesktopShortcut" Guid="bcaea286-8df1-4e9a-9763-5ca38ada70b6">
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+				<Shortcut Id="WinFormsApp1.lnk" Directory="DesktopFolder" Name="WinFormsApp1" WorkingDirectory="ProductFolder" Target="[ProductFolder]\\WinFormsApp1.exe" Icon="icon.ico" />
+				<RemoveFolder Id="DesktopShortcut" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="desktopShortcut" Type="string" Value="1" />
+			</Component>
+		</StandardDirectory>
+
+		<!-- Program menu shortcut -->
+		<StandardDirectory Id="ProgramMenuFolder">
+			<Component Id="ProductProgramMenu" Guid="f0cb4279-ea04-4f67-9be9-b4f18b49d806">
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+				<Shortcut Id="ExeFileMenu" Directory="ProgramMenuFolder" Name="WinFormsApp1" WorkingDirectory="ProductFolder" Target="[ProductFolder]\\WinFormsApp1.exe" Icon="icon.ico" />
+				<RemoveFolder Id="ProductProgramMenu" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="programMenuShortcut" Type="string" Value="1" />
+			</Component>
+		</StandardDirectory>
+
+		<!-- 使うUIセットの指定 -->
+		<UIRef Id="WixUI_More_Minimal"/>
+	</Package>
+</Wix>

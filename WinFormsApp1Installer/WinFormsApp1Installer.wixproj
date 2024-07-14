@@ -1,0 +1,30 @@
+﻿<Project Sdk="WixToolset.Sdk/5.0.0">
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<Cultures>ja-JP</Cultures>
+	</PropertyGroup>
+	<ItemGroup>
+		<Content Include="icon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="WixToolset.Heat" Version="5.0.0" />
+		<PackageReference Include="WixToolset.UI.wixext" Version="5.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\WinFormsApp1ContextMenu\WinFormsApp1ContextMenu.csproj" />
+		<ProjectReference Include="..\WinFormsApp1\WinFormsApp1.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<HarvestDirectory Include="..\WinFormsApp1\bin\Debug\net8.0-windows">
+			<ComponentGroupName>WinFormsApp1.Components</ComponentGroupName>
+			<DirectoryRefId>ProductFolder</DirectoryRefId>
+			<SuppressRootDirectory>true</SuppressRootDirectory>
+		</HarvestDirectory>
+	</ItemGroup>
+	<ItemGroup>
+		<HarvestDirectory Include="..\WinFormsApp1ContextMenu\bin\Debug">
+			<ComponentGroupName>WinFormsApp1ContextMenu.Components</ComponentGroupName>
+			<DirectoryRefId>ProductFolder</DirectoryRefId>
+			<SuppressRootDirectory>true</SuppressRootDirectory>
+		</HarvestDirectory>
+	</ItemGroup>
+</Project>
